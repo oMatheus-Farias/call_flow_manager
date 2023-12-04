@@ -26,7 +26,7 @@ export default function Register(){
 
   return(
     <div className=" w-full h-screen bg-gradient-to-t from-secondary to-primary items-center justify-center flex px-8" >
-      <div className=" bg-offWhite w-full max-w-3xl max-h-[36em] h-full px-4 pt-12 flex items-center rounded-3xl flex-col" >
+      <div className=" bg-offWhite w-full max-w-3xl px-4 pt-12 flex items-center rounded-3xl flex-col pb-12" >
         <h1 className="text-4xl font-bold text-primary mb-20 sm:text-6xl" >
           Cadastre-se
         </h1>
@@ -64,9 +64,8 @@ export default function Register(){
             className="w-full rounded-xl h-12 max-w-lg flex justify-center items-center bg-primary text-white font-bold cursor-pointer mb-8 text-xl" >
               Cadastrar
           </button>
-
-          <Link to='/' >Já possui uma conta? Faça login</Link>
         </form>
+          <Link to='/' >Já possui uma conta? Faça login</Link>
       </div>
     </div>
   );
