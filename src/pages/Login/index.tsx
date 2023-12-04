@@ -1,10 +1,12 @@
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
+
 import { Link } from "react-router-dom";
+import Input from "../../components/Input";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import Input from "../../components/Input";
 
 const schema = z.object({
   email: z.string().email('Insira um email válido').nonempty('O campo email é obrigatório'),
@@ -14,13 +16,15 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function Login(){
+  const { signIn } = useContext(AuthContext);
+
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange"
   });
 
   function onSubmit(data: FormData){
-    console.log(data);
+    signIn(data.email, data.password);
   };
 
   return(
