@@ -18,13 +18,14 @@ type FormData = z.infer<typeof schema>;
 export default function Login(){
   const { signIn } = useContext(AuthContext);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange"
   });
 
   function onSubmit(data: FormData){
     signIn(data.email, data.password);
+    reset();
   };
 
   return(

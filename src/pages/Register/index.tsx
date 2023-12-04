@@ -18,15 +18,16 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function Register(){
-  const { signUp } = useContext(AuthContext);
+  const { signUp, loadingAuth } = useContext(AuthContext);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange"
   });
 
   function handleRegister(data: FormData){
     signUp(data);
+    reset();
   };
 
   return(
@@ -67,7 +68,7 @@ export default function Register(){
           <button 
             type="submit"
             className="w-full rounded-xl h-12 max-w-lg flex justify-center items-center bg-primary text-white font-bold cursor-pointer mb-8 text-xl" >
-              Cadastrar
+              { loadingAuth ? 'Carregando...' : 'Cadastrar' }
           </button>
         </form>
           <Link to='/' >Já possui uma conta? Faça login</Link>
