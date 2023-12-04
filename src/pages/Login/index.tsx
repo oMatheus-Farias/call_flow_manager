@@ -1,6 +1,28 @@
 import { Link } from "react-router-dom";
 
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import Input from "../../components/Input";
+
+const schema = z.object({
+  email: z.string().email('Insira um email válido').nonempty('O campo email é obrigatório'),
+  password: z.string().min(6, 'A senha deve ter no minimo 6 caracteres').nonempty('O campo senha é obrigatório')
+});
+
+type FormData = z.infer<typeof schema>
+
 export default function Login(){
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    mode: "onChange"
+  });
+
+  function onSubmit(data: FormData){
+    console.log(data);
+  };
+
   return(
     <div className=" w-full h-screen bg-gradient-to-t from-secondary to-primary items-center justify-center flex px-8" >
       <div className=" bg-offWhite w-full max-w-3xl max-h-[36em] h-full px-4 pt-12 flex items-center rounded-3xl flex-col" >
@@ -8,17 +30,24 @@ export default function Login(){
           Faça login
         </h1>
 
-        <form className="w-full flex flex-col items-center justify-center" >
-          <input
-            className="w-full rounded-xl h-12 max-w-lg px-6 items-center bg-placeholder text-white border-0 outline-none mb-8"
+        <form 
+          onSubmit={ handleSubmit(onSubmit) }
+          className="w-full flex flex-col items-center justify-center" 
+        >
+          <Input
             type="email"
             placeholder="Email"
+            name="email"
+            error={ errors.email?.message }
+            register={ register }
           />
 
-          <input
-            className="w-full rounded-xl h-12 max-w-lg px-6 items-center bg-placeholder text-white border-0 outline-none mb-8"
+          <Input
             type="password"
             placeholder="Senha"
+            name="password"
+            error={ errors.password?.message }
+            register={ register }
           />
 
           <button 

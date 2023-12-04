@@ -11,15 +11,15 @@ interface InputProps {
 
 export default function Input({ type, placeholder, name, register, error, rules }: InputProps){
   return(
-    <div>
+    <div className="w-full mb-8" >
       <input
-        className="w-full rounded-xl h-12 max-w-lg px-6 items-center bg-placeholder text-white border-0 outline-none mb-8"
+        className="w-full rounded-xl h-12 max-w-lg px-6 items-center bg-placeholder text-white border-0 outline-none"
         type={ type }
         placeholder={ placeholder }
         { ...register(name, rules) }
         id={ name }
       />
-      { error && <p>{ error }</p> }
+      { error && <p className="p-0 text-redColor" >{ error }</p> }
     </div>
   );
 };
