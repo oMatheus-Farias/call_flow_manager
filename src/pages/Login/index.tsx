@@ -16,7 +16,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function Login(){
-  const { signIn } = useContext(AuthContext);
+  const { signIn, loadingAuth } = useContext(AuthContext);
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -58,7 +58,7 @@ export default function Login(){
           <button 
             type="submit"
             className="w-full rounded-xl h-12 max-w-lg flex justify-center items-center bg-primary text-white font-bold cursor-pointer mb-8 text-xl" >
-              Login
+              { loadingAuth ? 'Carregando...' : 'Login' }
           </button>
         </form>
           <Link to='/register' >Não possui uma conta? Cadastre-se</Link>
