@@ -1,10 +1,13 @@
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
+
 import { Link } from "react-router-dom";
+import Input from "../../components/Input";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod/src/zod.js";
 
-import Input from "../../components/Input";
 
 const schema = z.object({
   name: z.string().min(2, 'O nome deve ter no mínimo 2 caracteres').nonempty('O campo nome é obrigatório'),
@@ -15,13 +18,15 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function Register(){
+  const { signUp } = useContext(AuthContext);
+
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onChange"
   });
 
   function handleRegister(data: FormData){
-    console.log(data);
+    signUp(data);
   };
 
   return(
