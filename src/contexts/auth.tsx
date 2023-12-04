@@ -48,7 +48,7 @@ export default function AuthProvider({ children }: { children: ReactNode } ){
       let data = {
         uid: uid,
         name: docSnap.data()?.name,
-        email: docSnap.data()?.email,
+        email: value.user?.email,
         avatarUrl: docSnap.data()?.avatarUrl
       };
 
