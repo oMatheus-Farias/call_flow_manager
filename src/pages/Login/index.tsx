@@ -11,7 +11,7 @@ const schema = z.object({
   password: z.string().min(6, 'A senha deve ter no minimo 6 caracteres').nonempty('O campo senha é obrigatório')
 });
 
-type FormData = z.infer<typeof schema>
+type FormData = z.infer<typeof schema>;
 
 export default function Login(){
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
