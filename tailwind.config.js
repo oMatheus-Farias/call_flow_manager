@@ -14,7 +14,8 @@ export default {
         whiteColor: '#FFF',
         greenColor: '#1FC61B',
         greyColor: '#4B4B4B',
-        redColor: '#C61B1B'
+        redColor: '#C61B1B',
+        hoverColor: 'rgba(255, 255, 255, 0.3)'
       },
     },
   },
