@@ -11,7 +11,8 @@ type AuthContextData = {
   loadingAuth: boolean,
   user: UserProps | null,
   signIn: (email: string, password: string) => void,
-  signUp: ({ name, email, password }: UserPropsSignUp) => void
+  signUp: ({ name, email, password }: UserPropsSignUp) => void,
+  loading: boolean
 };
 
 interface UserPropsSignUp {
@@ -32,8 +33,24 @@ export const AuthContext = createContext({} as AuthContextData);
 export default function AuthProvider({ children }: { children: ReactNode } ){
   const [user, setUser] = useState<UserProps | null>(null);
   const [loadingAuth, setLoadingAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    function loadUser(){
+      const storageUser = localStorage.getItem("@userData");
+
+      if(storageUser){
+        setUser(JSON.parse(storageUser));
+        setLoading(false);
+      };
+
+      setLoading(false);
+    };
+
+    loadUser();
+  }, []);
 
   async function signIn(email: string, password: string){
     setLoadingAuth(true);
@@ -105,7 +122,7 @@ export default function AuthProvider({ children }: { children: ReactNode } ){
   };
 
   return(
-    <AuthContext.Provider value={{ signed: !!user, loadingAuth, user, signIn, signUp }} >
+    <AuthContext.Provider value={{ signed: !!user, loadingAuth, user, signIn, signUp, loading }} >
       { children }
     </AuthContext.Provider>
   );

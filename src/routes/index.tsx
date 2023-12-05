@@ -6,6 +6,7 @@ import Customers from "../pages/Customers";
 import Profile from "../pages/Profile";
 
 import { Routes, Route } from "react-router-dom";
+import PrivateRoutes from "./privateRoutes";
 
 export default function RoutesApp(){
   return(
@@ -13,10 +14,10 @@ export default function RoutesApp(){
       <Route path="/" element={ <Login/> } />
       <Route path="/register" element={ <Register/> } />
 
-      <Route path="/dashboard" element={ <Dashboard/> } />
-      <Route path="/new" element={ <New/> } />
-      <Route path="/customers" element={ <Customers/> } />
-      <Route path="/profile" element={ <Profile/> } />
+      <Route path="/dashboard" element={ <PrivateRoutes><Dashboard/></PrivateRoutes> } />
+      <Route path="/new" element={ <PrivateRoutes><New/></PrivateRoutes> } />
+      <Route path="/customers" element={ <PrivateRoutes><Customers/></PrivateRoutes> } />
+      <Route path="/profile" element={ <PrivateRoutes><Profile/></PrivateRoutes> } />
     </Routes>
   );
 };
