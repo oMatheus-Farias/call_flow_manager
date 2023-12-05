@@ -38,7 +38,7 @@ export default function AuthProvider({ children }: { children: ReactNode } ){
   const navigate = useNavigate();
 
   useEffect(() => {
-    function loadUser(){
+    async function loadUser(){
       const storageUser = localStorage.getItem("@userData");
 
       if(storageUser){

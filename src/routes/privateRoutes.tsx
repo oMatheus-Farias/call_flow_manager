@@ -5,13 +5,14 @@ import { Navigate } from "react-router-dom";
 export default function PrivateRoutes({ children }: { children: ReactNode }){
   const { signed, loading } = useContext(AuthContext);
 
+  if(loading){
+    return <div></div>
+  };
+  
   if(!signed){
     return <Navigate to='/' />
   };
 
-  if(loading){
-    return <div></div>
-  };
   
   return children;
 };
