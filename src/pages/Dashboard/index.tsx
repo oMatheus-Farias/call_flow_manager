@@ -2,8 +2,8 @@ import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth";
 
 import Nav from "../../components/Nav";
-import Container from "../../components/Container";
 import Header from "../../components/Header";
+import Container from "../../components/Container";
 
 export default function Dashboard(){
   const { handleSignOut } = useContext(AuthContext);
