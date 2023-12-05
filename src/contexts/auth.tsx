@@ -123,6 +123,7 @@ export default function AuthProvider({ children }: { children: ReactNode } ){
     .then(() => {
       localStorage.removeItem("@userData");
       setUser(null);
+      toast.success('Volte sempre!');
     })
     .catch((error) => {
       console.log('Erro ao deslogar', error);

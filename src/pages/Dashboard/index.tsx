@@ -1,7 +1,14 @@
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
+
+import Nav from "../../components/Nav";
+
 export default function Dashboard(){
+  const { handleSignOut } = useContext(AuthContext);
+
   return(
-    <div>
-      Page Dashboard
+    <div className="h-screen" >
+      <Nav/>
     </div>
   );
 };
