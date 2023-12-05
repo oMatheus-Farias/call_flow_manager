@@ -1,6 +1,6 @@
 import { ReactNode ,useState, createContext, useEffect } from "react";
 import { db, auth } from "../service/firebaseConnection";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 import toast from "react-hot-toast";
@@ -12,7 +12,8 @@ type AuthContextData = {
   user: UserProps | null,
   signIn: (email: string, password: string) => void,
   signUp: ({ name, email, password }: UserPropsSignUp) => void,
-  loading: boolean
+  loading: boolean,
+  handleSignOut: () => void
 };
 
 interface UserPropsSignUp {
@@ -117,12 +118,24 @@ export default function AuthProvider({ children }: { children: ReactNode } ){
     });
   };
 
+  async function handleSignOut(){
+    await signOut(auth)
+    .then(() => {
+      localStorage.removeItem("@userData");
+      setUser(null);
+    })
+    .catch((error) => {
+      console.log('Erro ao deslogar', error);
+      toast.error('Erro ao deslogar');
+    });
+  };
+
   function storageUser(data: UserProps){
     localStorage.setItem("@userData", JSON.stringify(data));
   };
 
   return(
-    <AuthContext.Provider value={{ signed: !!user, loadingAuth, user, signIn, signUp, loading }} >
+    <AuthContext.Provider value={{ signed: !!user, loadingAuth, user, signIn, signUp, loading, handleSignOut }} >
       { children }
     </AuthContext.Provider>
   );
