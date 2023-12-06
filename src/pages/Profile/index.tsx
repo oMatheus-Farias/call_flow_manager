@@ -7,9 +7,15 @@ import Container from "../../components/Container";
 import avatarUrl from "../../assets/avatar.png";
 
 export default function Profile(){
-  const { user } = useContext(AuthContext);
+  const { user, handleSignOut } = useContext(AuthContext);
 
+  const [name, setName] = useState('Matheus Farias');
+  const [email, setEmail] = useState('matheus@teste.com');
   const [imageUrl, setImageUrl] = useState(user && user.avatarUrl);
+
+  function signOut(): void{
+    handleSignOut();
+  };
 
   return(
     <div className="h-screen bg-offWhite md:flex" >
@@ -23,9 +29,9 @@ export default function Profile(){
           }
         />
 
-        <section className="bg-white rounded-xl p-4 flex items-center mb-4" >
-            <form>
-              <div className="max-w-[15.6em] max-h-[15.6em] relative cursor-pointer" >
+        <section className="bg-white rounded-xl p-4" >
+            <form className="flex flex-col max-w-lg" >
+              <div className="max-w-[15.6em] max-h-[15.6em] relative cursor-pointer mb-4" >
                 <img
                   className="max-w-[15.6em] max-h-[15.6em] rounded-full z-10"
                   src={ imageUrl === null ? avatarUrl : imageUrl }
@@ -41,9 +47,36 @@ export default function Profile(){
                   type="file" accept="image/*" 
                 />
               </div>
+
+              <label className="text-2xl text-primary mb-2" >Nome</label>
+              <input
+                className="w-full bg-placeholder rounded-2xl px-4 py-3 text-base text-greyColor"
+                type="text"
+                name="name"
+                value={ name }
+              />
+
+              <label className="text-2xl text-primary mb-2 mt-6" >Email</label>
+              <input
+                className="w-full bg-placeholder rounded-2xl px-4 py-3 text-base text-greyColor cursor-no-drop"
+                type="email"
+                name="email"
+                value={ email }
+                disabled
+              />
+
+              <button className="mt-6 bg-primary w-full rounded-2xl px-4 py-3 text-xl text-white font-bold" >Salvar</button>
             </form>
         </section>
-        
+
+        <section className="mt-4 bg-white w-full rounded-xl px-4 py-2" >
+          <button 
+            className="border border-primary px-3 py-2 rounded-xl text-lg text-primary font-bold" 
+            onClick={ signOut }
+          >
+              Sair
+            </button>
+        </section>
       </Container>
     </div>
   );
