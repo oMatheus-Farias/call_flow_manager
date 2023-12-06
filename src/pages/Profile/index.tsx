@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { AuthContext } from "../../contexts/auth";
+import { AuthContext } from "../../contexts/auth"; // ESTILIZAR A FOTO DE PERFIL
 
 import Nav from "../../components/Nav";
 import Header from "../../components/Header";
@@ -129,7 +129,7 @@ export default function Profile(){
             <form className="flex flex-col max-w-lg" onSubmit={ handleSubmit } >
               <div className="max-w-[15.6em] max-h-[15.6em] relative cursor-pointer mb-4" >
                 <img
-                  className="max-w-[12em] w-full max-h-[12em] h-full rounded-full z-10 object-cover"
+                  className="rounded-full z-10 object-cover w-48 h-48"
                   src={ imageUrl === null ? avatarUrl : imageUrl }
                   alt="Foto de perfil do usuário"
                 />

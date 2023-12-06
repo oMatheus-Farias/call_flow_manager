@@ -5,13 +5,13 @@ import avatarImgNull from "../../assets/avatar.png";
 import { Link } from "react-router-dom";
 
 export default function Nav(){
-  const { user } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);  
 
   return(
     <nav className="w-full h-14 bg-gradient-to-t from-secondary to-primary flex md:max-w-[16.2em] md:h-full md:rounded-r-[2.5em] md:flex md:flex-col md:items-center" >
       <div className="flex flex-col items-center justify-center" >
         <img
-          className="hidden md:block object-cover max-w-[6.4em] max-h-[6.4em] rounded-full border-4 border-white mt-4 mb-16"
+          className="hidden md:block object-cover rounded-full border-4 border-white mt-4 mb-16 w-28 h-28"
           src={ !user?.avatarUrl ? avatarImgNull : user.avatarUrl }
           alt="Foto do usuario"
         />
