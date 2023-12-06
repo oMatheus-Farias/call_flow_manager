@@ -1,13 +1,8 @@
-import { useContext } from "react";
-import { AuthContext } from "../../contexts/auth";
-
 import Nav from "../../components/Nav";
 import Header from "../../components/Header";
 import Container from "../../components/Container";
 
 export default function Dashboard(){
-  const { handleSignOut } = useContext(AuthContext);
-
   return(
     <div className="h-screen bg-offWhite md:flex" >
       <Nav/>

@@ -1,8 +1,16 @@
+import { useContext, useState } from "react";
+import { AuthContext } from "../../contexts/auth";
+
 import Nav from "../../components/Nav";
 import Header from "../../components/Header";
 import Container from "../../components/Container";
+import avatarUrl from "../../assets/avatar.png";
 
 export default function Profile(){
+  const { user } = useContext(AuthContext);
+
+  const [imageUrl, setImageUrl] = useState(user && user.avatarUrl);
+
   return(
     <div className="h-screen bg-offWhite md:flex" >
       <Nav/>
@@ -15,7 +23,27 @@ export default function Profile(){
           }
         />
 
-        <h1>Testeeeeeeeee</h1>
+        <section className="bg-white rounded-xl p-4 flex items-center mb-4" >
+            <form>
+              <div className="max-w-[15.6em] max-h-[15.6em] relative cursor-pointer" >
+                <img
+                  className="max-w-[15.6em] max-h-[15.6em] rounded-full z-10"
+                  src={ imageUrl === null ? avatarUrl : imageUrl }
+                  alt="Foto de perfil do usuário"
+                />
+
+                <svg className="absolute left-[5.2em] top-[5.2em] w-7 h-7 text-white opacity-40" fill="currentColor" xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512">
+                  <path d="M246.6 9.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 109.3V320c0 17.7 14.3 32 32 32s32-14.3 32-32V109.3l73.4 73.4c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-128-128zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32v64c0 53 43 96 96 96H352c53 0 96-43 96-96V352c0-17.7-14.3-32-32-32s-32 14.3-32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V352z"/>
+                </svg>
+
+                <input 
+                  className="absolute top-0 cursor-pointer h-[12em] w-[12em] opacity-0"
+                  type="file" accept="image/*" 
+                />
+              </div>
+            </form>
+        </section>
+        
       </Container>
     </div>
   );
