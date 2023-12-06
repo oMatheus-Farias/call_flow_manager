@@ -11,13 +11,17 @@ import toast from "react-hot-toast";
 import { db, storage } from "../../service/firebaseConnection";
 import { doc, updateDoc } from "firebase/firestore";
 
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 export default function Profile(){
   const { user, setUser, handleSignOut, storageUser } = useContext(AuthContext);
 
   const [name, setName] = useState(user && user.name || '');
   const [email, setEmail] = useState(user && user.email || '');
   const [imageUrl, setImageUrl] = useState(user && user.avatarUrl);
-  const [imageAvatarStorage, setImageAvatarStorage] = useState(null);
+  
+  const propsUploadBytes = new TextEncoder().encode();
+  const [imageAvatarStorage, setImageAvatarStorage] = useState(null || propsUploadBytes);
 
   function signOut(): void{
     handleSignOut();
@@ -32,7 +36,7 @@ export default function Profile(){
         setImageUrl(URL.createObjectURL(image));
       }else{
         toast.error('Envie uma imagem do tipo JPEG ou PNG');
-        setImageAvatarStorage(null);
+        setImageAvatarStorage(propsUploadBytes);
         return;
       };
     };
@@ -64,7 +68,49 @@ export default function Profile(){
         console.log('Erro ao atualizar perfil', error);
         toast.error('Ocorreu um erro ao tentar atualizar o perfil');
       });
+    }else if(imageUrl !== null && name !== ''){
+      handleUpload();
     };
+  };
+
+  async function handleUpload(){
+    const uid = user?.uid || '';
+
+    const uploadRef = ref(storage, `images/${uid}/${imageAvatarStorage}`);
+    
+    const upload = await uploadBytes(uploadRef, imageAvatarStorage)
+    .then((snapshot) => {
+      getDownloadURL(snapshot.ref)
+      .then(async (dowloadUrl) => {
+        const photographUrl = dowloadUrl;
+        
+        const docRef = doc(db, "users", uid);
+        await updateDoc(docRef, {
+          avatarUrl: photographUrl,
+          name: name
+        })
+        .then(() => {
+          let data = {
+            uid: uid,
+            name: name,
+            email: user?.email || '',
+            avatarUrl: photographUrl
+          };
+  
+          setUser(data);
+          storageUser(data);
+          toast.success('Perfil atualizado com sucesso!');
+        })
+        .catch((error) => {
+          console.log('Erro ao atualizar perfil', error);
+          toast.error('Ocorreu um erro ao tentar atualizar o perfil');
+        });
+      });
+    })
+    .catch((error) => {
+      console.log('Erro ao tentar salvar a imagem', error);
+      toast.error('Erro ao tentar salvar a imagem');
+    });
   };
 
   return(
