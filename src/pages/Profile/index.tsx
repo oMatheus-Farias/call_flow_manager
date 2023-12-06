@@ -10,7 +10,6 @@ export default function Profile(){
   const { user, handleSignOut } = useContext(AuthContext);
 
   const [name, setName] = useState('Matheus Farias');
-  const [email, setEmail] = useState('matheus@teste.com');
   const [imageUrl, setImageUrl] = useState(user && user.avatarUrl);
 
   function signOut(): void{
@@ -50,7 +49,7 @@ export default function Profile(){
 
               <label className="text-2xl text-primary mb-2" >Nome</label>
               <input
-                className="w-full bg-placeholder rounded-2xl px-4 py-3 text-base text-greyColor"
+                className="w-full bg-placeholder rounded-2xl px-4 py-3 text-base text-white"
                 type="text"
                 name="name"
                 value={ name }
@@ -61,7 +60,7 @@ export default function Profile(){
                 className="w-full bg-placeholder rounded-2xl px-4 py-3 text-base text-greyColor cursor-no-drop"
                 type="email"
                 name="email"
-                value={ email }
+                placeholder="matheus@teste.com"
                 disabled
               />
 
