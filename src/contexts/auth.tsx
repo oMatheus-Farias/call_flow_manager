@@ -1,7 +1,7 @@
 import { ReactNode ,useState, createContext, useEffect } from "react";
 import { db, auth } from "../service/firebaseConnection";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, addDoc, collection, getDoc, setDoc } from "firebase/firestore";
 
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,9 @@ type AuthContextData = {
   signUp: ({ name, email, password }: UserPropsSignUp) => void,
   loading: boolean,
   handleSignOut: () => void,
-  storageUser: (data: UserProps) => void
+  storageUser: (data: UserProps) => void,
+  registerCustomers: ({fantasyName, cnpj, address}: CustomerProps) => void,
+  loadinRegisterClient: boolean
 };
 
 interface UserPropsSignUp {
@@ -31,12 +33,19 @@ interface UserProps {
   avatarUrl: any | null
 };
 
+interface CustomerProps {
+  fantasyName: string,
+  cnpj: string,
+  address: string
+};
+
 export const AuthContext = createContext({} as AuthContextData);
 
 export default function AuthProvider({ children }: { children: ReactNode } ){
   const [user, setUser] = useState<UserProps | null>(null);
   const [loadingAuth, setLoadingAuth] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadinRegisterClient, setLoadingRegisterClient] = useState(false);
 
   const navigate = useNavigate();
 
@@ -137,6 +146,25 @@ export default function AuthProvider({ children }: { children: ReactNode } ){
     localStorage.setItem("@userData", JSON.stringify(data));
   };
 
+  async function registerCustomers({fantasyName, cnpj, address}: CustomerProps){
+    setLoadingRegisterClient(true);
+
+    await addDoc(collection(db, "customers"), {
+      fantasyName,
+      cnpj,
+      address
+    })
+    .then(() => {
+      setLoadingRegisterClient(false);
+      toast.success('Cliente registrado com sucesso');
+    })
+    .catch((error) => {
+      setLoadingRegisterClient(false);
+      console.log('Erro ao tentar cadastrar cliente', error);
+      toast.error('Erro ao tentar cadastrar cliente');
+    });
+  };
+
   return(
     <AuthContext.Provider value={{ 
       signed: !!user, 
@@ -147,7 +175,9 @@ export default function AuthProvider({ children }: { children: ReactNode } ){
       signUp, 
       loading, 
       handleSignOut, 
-      storageUser 
+      storageUser,
+      registerCustomers,
+      loadinRegisterClient 
     }} 
     >
       { children }

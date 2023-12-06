@@ -1,3 +1,6 @@
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
+
 import Nav from "../../components/Nav";
 import Header from "../../components/Header";
 import Container from "../../components/Container";
@@ -16,13 +19,15 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function Customers(){
+  const { loadinRegisterClient, registerCustomers } = useContext(AuthContext);
+
   const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: 'onChange'
   });
 
   function onSubmit(data: FormData){
-    console.log(data);
+    registerCustomers(data);
     reset();
   };
 
@@ -67,10 +72,11 @@ export default function Customers(){
               error={ errors.address?.message }
             />
 
-            <button 
+            <button
+              type="submit" 
               className="mt-6 bg-primary w-full rounded-2xl px-4 py-3 text-xl text-white font-bold"
             >
-              Salvar
+              { loadinRegisterClient ? 'Carregando...' : 'Salvar' }
             </button>
           </form>
         </section>
