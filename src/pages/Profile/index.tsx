@@ -9,7 +9,8 @@ import avatarUrl from "../../assets/avatar.png";
 export default function Profile(){
   const { user, handleSignOut } = useContext(AuthContext);
 
-  const [name, setName] = useState('Matheus Farias');
+  const [name, setName] = useState(user && user.name || '');
+  const [email, setEmail] = useState(user && user.email || '');
   const [imageUrl, setImageUrl] = useState(user && user.avatarUrl);
 
   function signOut(): void{
@@ -53,6 +54,7 @@ export default function Profile(){
                 type="text"
                 name="name"
                 value={ name }
+                onChange={ () => {} }
               />
 
               <label className="text-2xl text-primary mb-2 mt-6" >Email</label>
@@ -60,7 +62,7 @@ export default function Profile(){
                 className="w-full bg-placeholder rounded-2xl px-4 py-3 text-base text-greyColor cursor-no-drop"
                 type="email"
                 name="email"
-                placeholder="matheus@teste.com"
+                value={ email }
                 disabled
               />
 
