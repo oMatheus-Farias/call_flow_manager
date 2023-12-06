@@ -6,15 +6,33 @@ import Header from "../../components/Header";
 import Container from "../../components/Container";
 import avatarUrl from "../../assets/avatar.png";
 
+import toast from "react-hot-toast";
+
 export default function Profile(){
-  const { user, handleSignOut } = useContext(AuthContext);
+  const { user, setUser, handleSignOut } = useContext(AuthContext);
 
   const [name, setName] = useState(user && user.name || '');
   const [email, setEmail] = useState(user && user.email || '');
   const [imageUrl, setImageUrl] = useState(user && user.avatarUrl);
+  const [imageAvatarStorage, setImageAvatarStorage] = useState(null);
 
   function signOut(): void{
     handleSignOut();
+  };
+
+  function handleFile(event: any){
+    if(event.target.files[0]){
+      const image = event.target.files[0];
+
+      if(image.type === 'image/jpeg' || image.type === 'image/png'){
+        setImageAvatarStorage(image);
+        setImageUrl(URL.createObjectURL(image));
+      }else{
+        toast.error('Envie uma imagem do tipo JPEG ou PNG');
+        setImageAvatarStorage(null);
+        return;
+      };
+    };
   };
 
   return(
@@ -33,7 +51,7 @@ export default function Profile(){
             <form className="flex flex-col max-w-lg" >
               <div className="max-w-[15.6em] max-h-[15.6em] relative cursor-pointer mb-4" >
                 <img
-                  className="max-w-[15.6em] max-h-[15.6em] rounded-full z-10"
+                  className="max-w-[12em] w-full max-h-[12em] h-full rounded-full z-10 object-cover"
                   src={ imageUrl === null ? avatarUrl : imageUrl }
                   alt="Foto de perfil do usuário"
                 />
@@ -45,6 +63,7 @@ export default function Profile(){
                 <input 
                   className="absolute top-0 cursor-pointer h-[12em] w-[12em] opacity-0"
                   type="file" accept="image/*" 
+                  onChange={ handleFile }
                 />
               </div>
 
@@ -54,7 +73,7 @@ export default function Profile(){
                 type="text"
                 name="name"
                 value={ name }
-                onChange={ () => {} }
+                onChange={ (event) => setName(event.target.value) }
               />
 
               <label className="text-2xl text-primary mb-2 mt-6" >Email</label>

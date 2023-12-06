@@ -10,6 +10,7 @@ type AuthContextData = {
   signed: boolean,
   loadingAuth: boolean,
   user: UserProps | null,
+  setUser: any,
   signIn: (email: string, password: string) => void,
   signUp: ({ name, email, password }: UserPropsSignUp) => void,
   loading: boolean,
@@ -136,7 +137,7 @@ export default function AuthProvider({ children }: { children: ReactNode } ){
   };
 
   return(
-    <AuthContext.Provider value={{ signed: !!user, loadingAuth, user, signIn, signUp, loading, handleSignOut }} >
+    <AuthContext.Provider value={{ signed: !!user, loadingAuth, user, setUser, signIn, signUp, loading, handleSignOut }} >
       { children }
     </AuthContext.Provider>
   );
