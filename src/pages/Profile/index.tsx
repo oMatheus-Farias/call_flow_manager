@@ -17,7 +17,7 @@ export default function Profile(){
   const { user, setUser, handleSignOut, storageUser } = useContext(AuthContext);
 
   const [name, setName] = useState(user && user.name || '');
-  const [email, setEmail] = useState(user && user.email || '');
+  const email = user && user.email || '';
   const [imageUrl, setImageUrl] = useState(user && user.avatarUrl);
   
   const propsUploadBytes = new TextEncoder().encode();
