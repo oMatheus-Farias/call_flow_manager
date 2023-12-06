@@ -8,8 +8,11 @@ import avatarUrl from "../../assets/avatar.png";
 
 import toast from "react-hot-toast";
 
+import { db, storage } from "../../service/firebaseConnection";
+import { doc, updateDoc } from "firebase/firestore";
+
 export default function Profile(){
-  const { user, setUser, handleSignOut } = useContext(AuthContext);
+  const { user, setUser, handleSignOut, storageUser } = useContext(AuthContext);
 
   const [name, setName] = useState(user && user.name || '');
   const [email, setEmail] = useState(user && user.email || '');
@@ -35,6 +38,35 @@ export default function Profile(){
     };
   };
 
+  async function handleSubmit(event: any){
+    event.preventDefault();
+
+    if(imageUrl === null && name !== ''){
+      const uid = user?.uid || '';
+      const docRef = doc(db, "users", uid);
+
+      await updateDoc(docRef, {
+        name: name
+      })
+      .then(() => {
+        let data = {
+          uid: uid,
+          name: name,
+          email: user?.email || '',
+          avatarUrl: user?.avatarUrl
+        };
+
+        setUser(data);
+        storageUser(data);
+        toast.success('Perfil atualizado com sucesso!');
+      })
+      .catch((error) => {
+        console.log('Erro ao atualizar perfil', error);
+        toast.error('Ocorreu um erro ao tentar atualizar o perfil');
+      });
+    };
+  };
+
   return(
     <div className="h-screen bg-offWhite md:flex" >
       <Nav/>
@@ -48,7 +80,7 @@ export default function Profile(){
         />
 
         <section className="bg-white rounded-xl p-4" >
-            <form className="flex flex-col max-w-lg" >
+            <form className="flex flex-col max-w-lg" onSubmit={ handleSubmit } >
               <div className="max-w-[15.6em] max-h-[15.6em] relative cursor-pointer mb-4" >
                 <img
                   className="max-w-[12em] w-full max-h-[12em] h-full rounded-full z-10 object-cover"
@@ -85,7 +117,11 @@ export default function Profile(){
                 disabled
               />
 
-              <button className="mt-6 bg-primary w-full rounded-2xl px-4 py-3 text-xl text-white font-bold" >Salvar</button>
+              <button 
+                className="mt-6 bg-primary w-full rounded-2xl px-4 py-3 text-xl text-white font-bold"
+              >
+                Salvar
+              </button>
             </form>
         </section>
 

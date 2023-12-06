@@ -14,7 +14,8 @@ type AuthContextData = {
   signIn: (email: string, password: string) => void,
   signUp: ({ name, email, password }: UserPropsSignUp) => void,
   loading: boolean,
-  handleSignOut: () => void
+  handleSignOut: () => void,
+  storageUser: (data: UserProps) => void
 };
 
 interface UserPropsSignUp {
@@ -137,7 +138,18 @@ export default function AuthProvider({ children }: { children: ReactNode } ){
   };
 
   return(
-    <AuthContext.Provider value={{ signed: !!user, loadingAuth, user, setUser, signIn, signUp, loading, handleSignOut }} >
+    <AuthContext.Provider value={{ 
+      signed: !!user, 
+      loadingAuth, 
+      user, 
+      setUser, 
+      signIn, 
+      signUp, 
+      loading, 
+      handleSignOut, 
+      storageUser 
+    }} 
+    >
       { children }
     </AuthContext.Provider>
   );
