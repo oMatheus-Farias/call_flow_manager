@@ -27,7 +27,7 @@ export default function Customers(){
   };
 
   return(
-    <div className="h-screen bg-offWhite md:flex" >
+    <div className="h-full bg-offWhite md:flex" >
       <Nav/>
 
       <Container>

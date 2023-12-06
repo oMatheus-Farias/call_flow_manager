@@ -8,7 +8,7 @@ export default function Nav(){
   const { user } = useContext(AuthContext);  
 
   return(
-    <nav className="w-full h-14 bg-gradient-to-t from-secondary to-primary flex md:max-w-[16.2em] md:h-full md:rounded-r-[2.5em] md:flex md:flex-col md:items-center" >
+    <nav className="w-full h-14 bg-gradient-to-t from-secondary to-primary flex md:max-w-[16.2em] md:min-h-screen md:h-full md:rounded-r-[2.5em] md:flex md:flex-col md:items-center" >
       <div className="flex flex-col items-center justify-center" >
         <img
           className="hidden md:block object-cover rounded-full border-4 border-white mt-4 mb-16 w-28 h-28"
