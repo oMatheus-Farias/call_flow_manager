@@ -15,3 +15,14 @@ html, body{
 input::placeholder{
   color: #FFF;
 }
+
+table th, table td{
+  padding: 0.60em;
+  text-align: center;
+}
+
+table th{
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
