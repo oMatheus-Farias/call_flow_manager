@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../../contexts/auth";
 
 import Nav from "../../components/Nav";
 import Header from "../../components/Header";
 import Container from "../../components/Container";
 
 import { db } from "../../service/firebaseConnection";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, collection, addDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
-import { list } from "firebase/storage";
 
 export default function New(){
+  const { user } = useContext(AuthContext);
+
   const [customer, setCustomer] = useState<any[]>([]);
   const [subject, setSubject] = useState('Suporte');
   const [status, setStatus] = useState('Aberto');
@@ -65,6 +67,30 @@ export default function New(){
     setCustomerSelected(event.target.value);
   };
 
+  async function handleRegister(event: any){
+    event.preventDefault();
+
+    await addDoc(collection(db, "called"), {
+      created: new Date(),
+      customer: customer[customerSelected].fantasyName,
+      customerId: customer[customerSelected].id,
+      subject,
+      status,
+      complement,
+      userId: user?.uid
+    })
+    .then(() => {
+      toast.success('Chamado registrado com sucesso');
+      setCustomerSelected(0);
+      setComplement('');
+      setSubject('Suporte');
+    })
+    .catch((error) => {
+      console.log('Erro ao tentar registrar o novo chamado', error);
+      toast.error('Ocorreu um erro, tente novamente');
+    });
+  };
+
   return(
     <div className="h-full bg-offWhite md:flex" >
       <Nav/>
@@ -78,7 +104,7 @@ export default function New(){
         />
 
         <section className="bg-white rounded-xl p-4 mb-2" >
-          <form className="flex flex-col max-w-lg w-full" >
+          <form className="flex flex-col max-w-lg w-full" onSubmit={ handleRegister } >
             <label className="text-2xl text-primary mb-2" >Cliente</label>
             { loadingCustomer ? (
               <input value='Carregando...' disabled />
