@@ -1,10 +1,61 @@
+import { useState, useEffect } from "react";
+
 import Nav from "../../components/Nav";
 import Header from "../../components/Header";
 import Container from "../../components/Container";
 
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
+
+import { db } from "../../service/firebaseConnection";
+import { collection, query, limit, getDocs, orderBy } from "firebase/firestore";
+
+const listCalledRef = collection(db, "called");
 
 export default function Dashboard(){
+  const [called, setCalled] = useState<any[]>([]);
+  const [emptyList, setEmptyList] = useState(false);
+
+  useEffect(() => {
+    async function loadCallList(){
+      const q = query(listCalledRef, orderBy('created', 'desc'), limit(5));
+
+      const querySnapshot = await getDocs(q)
+      .then((snapshot) => {
+        if(snapshot.size !== 0){
+          let list: any[] = [];
+
+          snapshot.forEach((doc) => {
+            list.push({
+              id: doc.id,
+              complement: doc.data().complement,
+              created: doc.data().created,
+              creadtFormat: format(doc.data().created.toDate(), "dd/MM/yyy"),
+              customer: doc.data().customer,
+              customerId: doc.data().customerId,
+              status: doc.data().status,
+              subject: doc.data().subject
+            });
+          });
+
+          setEmptyList(false);
+          setCalled((item) => [...item, ...list]);
+        }else{
+          setEmptyList(true);
+        };
+      })
+      .catch((error) => {
+        console.log('Erro ao buscar lista de chamados', error);
+      });
+    };
+
+    loadCallList();
+
+    return () => {
+      setCalled([]);
+    };
+  }, []);
+
   return(
     <div className="h-screen bg-offWhite md:flex" >
       <Nav/>
