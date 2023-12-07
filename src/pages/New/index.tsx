@@ -14,6 +14,8 @@ export default function New(){
   const [subject, setSubject] = useState('Suporte');
   const [status, setStatus] = useState('Aberto');
   const [complement, setComplement] = useState('');
+  const [loadingCustomer, setLoadingCustomer] = useState(true);
+  const [customerSelected, setCustomerSelected] = useState(customer[0]);
 
   const listCustomersRef = collection(db, "customers");
 
@@ -31,15 +33,18 @@ export default function New(){
         });
 
         if(snapshot.docs.length === 0){
+          setLoadingCustomer(false);
           console.log('Nenhum cliente encontrado');
           toast.error('Nenhum cliente encontrado/cadastrado');
           setCustomer([{ id: 1, fantasyName: 'FREELA' }]);
           return
         };
 
+        setLoadingCustomer(false);
         setCustomer(list);
       })
       .catch((error) => {
+        setLoadingCustomer(false);
         console.log('Erro ao buscar lista de clientes', error);
         setCustomer([{ id: 1, fantasyName: 'FREELA' }]);
       })
@@ -56,7 +61,9 @@ export default function New(){
     setSubject(event.target.value);
   };
 
-  console.log(customer)
+  function handleCustomerSelectedChange(event: any){
+    setCustomerSelected(event.target.value);
+  };
 
   return(
     <div className="h-full bg-offWhite md:flex" >
@@ -73,10 +80,21 @@ export default function New(){
         <section className="bg-white rounded-xl p-4 mb-2" >
           <form className="flex flex-col max-w-lg w-full" >
             <label className="text-2xl text-primary mb-2" >Cliente</label>
-            <select className="bg-placeholder rounded-2xl px-4 py-3 text-base text-white" >
-              <option key={1} value={1} >Loja Informática</option>
-              <option key={2} value={2} >Mercado Esquina</option>
-            </select>
+            { loadingCustomer ? (
+              <input value='Carregando...' disabled />
+            ) : (
+              <select 
+                value={ customerSelected }
+                onChange={ handleCustomerSelectedChange }
+                className="bg-placeholder rounded-2xl px-4 py-3 text-base text-white" 
+              >
+                { customer.map((item, index) => {
+                  return(
+                    <option key={index} value={index} >{ item.fantasyName }</option>
+                  )
+                }) }
+              </select>
+            ) }
 
             <label className="text-2xl text-primary mb-2 mt-6" >Assunto</label>
             <select 
