@@ -1,17 +1,62 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Nav from "../../components/Nav";
 import Header from "../../components/Header";
 import Container from "../../components/Container";
 
+import { db } from "../../service/firebaseConnection";
+import { getDocs, collection } from "firebase/firestore";
+import toast from "react-hot-toast";
+import { list } from "firebase/storage";
+
 export default function New(){
-  const [customer, setCustomer] = useState([]);
+  const [customer, setCustomer] = useState<any[]>([]);
   const [subject, setSubject] = useState('Suporte');
   const [status, setStatus] = useState('Aberto');
+  const [complement, setComplement] = useState('');
+
+  const listCustomersRef = collection(db, "customers");
+
+  useEffect(() => {
+    async function getCustomersList(){
+      const querySnapshot = await getDocs(listCustomersRef)
+      .then((snapshot) => {
+        let list: any[] = [];
+
+        snapshot.forEach((doc) => {
+          list.push({
+            id: doc.id,
+            fantasyName: doc.data().fantasyName
+          });
+        });
+
+        if(snapshot.docs.length === 0){
+          console.log('Nenhum cliente encontrado');
+          toast.error('Nenhum cliente encontrado/cadastrado');
+          setCustomer([{ id: 1, fantasyName: 'FREELA' }]);
+          return
+        };
+
+        setCustomer(list);
+      })
+      .catch((error) => {
+        console.log('Erro ao buscar lista de clientes', error);
+        setCustomer([{ id: 1, fantasyName: 'FREELA' }]);
+      })
+    };
+
+    getCustomersList();
+  }, []);
 
   function handleChecked(event: any){
     setStatus(event.target.value);
   };
+
+  function handleSubject(event: any){
+    setSubject(event.target.value);
+  };
+
+  console.log(customer)
 
   return(
     <div className="h-full bg-offWhite md:flex" >
@@ -34,7 +79,11 @@ export default function New(){
             </select>
 
             <label className="text-2xl text-primary mb-2 mt-6" >Assunto</label>
-            <select className="bg-placeholder rounded-2xl px-4 py-3 text-base text-white" >
+            <select 
+              className="bg-placeholder rounded-2xl px-4 py-3 text-base text-white"
+              value={ subject }
+              onChange={ handleSubject } 
+            >
               <option value='Sporte' >Suporte</option>
               <option value='Visita Técnica' >Visita Técnica</option>
               <option value='Financeiro' >Financeiro</option>
@@ -80,9 +129,12 @@ export default function New(){
             <textarea
               className="bg-placeholder text-white rounded-xl px-4 py-3 text-base resize-none max-h-24"
               placeholder="Descreva o seu problema (opcional)"
+              value={ complement }
+              onChange={ (event) => setComplement(event.target.value) }
             />
 
-            <button 
+            <button
+              type="submit" 
               className="mt-3 bg-primary w-full rounded-2xl px-4 py-3 text-xl text-white font-bold"
             >
               Registrar
