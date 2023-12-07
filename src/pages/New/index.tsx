@@ -1,8 +1,18 @@
+import { useState } from "react";
+
 import Nav from "../../components/Nav";
 import Header from "../../components/Header";
 import Container from "../../components/Container";
 
 export default function New(){
+  const [customer, setCustomer] = useState([]);
+  const [subject, setSubject] = useState('Suporte');
+  const [status, setStatus] = useState('Aberto');
+
+  function handleChecked(event: any){
+    setStatus(event.target.value);
+  };
+
   return(
     <div className="h-full bg-offWhite md:flex" >
       <Nav/>
@@ -36,7 +46,9 @@ export default function New(){
                 <input 
                   type="radio"
                   name="radio"
-                  value='Em aberto' 
+                  value='Aberto'
+                  onChange={handleChecked}
+                  checked={ status === 'Aberto' } 
                 />
                 <span>Em aberto</span>
               </div>
@@ -45,7 +57,9 @@ export default function New(){
                 <input 
                   type="radio"
                   name="radio"
-                  value='Progresso' 
+                  value='Progresso'
+                  onChange={handleChecked}
+                  checked={ status === 'Progresso' } 
                 />
                 <span>Progresso</span>
               </div>
@@ -54,7 +68,9 @@ export default function New(){
                 <input 
                   type="radio"
                   name="radio"
-                  value='Atendido' 
+                  value='Atendido'
+                  onChange={handleChecked}
+                  checked={ status === 'Atendido' } 
                 />
                 <span>Atendido</span>  
               </div>
