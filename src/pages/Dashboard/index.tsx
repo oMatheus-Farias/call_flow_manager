@@ -4,18 +4,6 @@ import Container from "../../components/Container";
 
 import { Link } from "react-router-dom";
 
-// table td .action{
-//   border: 0;
-//   padding: 6px;
-//   border-radius: 4px;
-//   display: inline-block;
-//   margin-right: 4px;
-// }
-
-// table td .action svg{
-//   vertical-align: middle;
-// }
-
 export default function Dashboard(){
   return(
     <div className="h-screen bg-offWhite md:flex" >

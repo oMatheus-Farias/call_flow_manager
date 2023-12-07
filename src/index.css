@@ -12,7 +12,7 @@ html, body{
   height: 100%;
 }
 
-input::placeholder{
+input::placeholder, textarea::placeholder{
   color: #FFF;
 }
 
