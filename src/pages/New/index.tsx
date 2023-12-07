@@ -9,6 +9,8 @@ import { db } from "../../service/firebaseConnection";
 import { getDocs, collection, addDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
 
+const listCustomersRef = collection(db, "customers");
+
 export default function New(){
   const { user } = useContext(AuthContext);
 
@@ -17,9 +19,7 @@ export default function New(){
   const [status, setStatus] = useState('Aberto');
   const [complement, setComplement] = useState('');
   const [loadingCustomer, setLoadingCustomer] = useState(true);
-  const [customerSelected, setCustomerSelected] = useState(customer[0]);
-
-  const listCustomersRef = collection(db, "customers");
+  const [customerSelected, setCustomerSelected] = useState(0);
 
   useEffect(() => {
     async function getCustomersList(){
@@ -34,12 +34,12 @@ export default function New(){
           });
         });
 
-        if(snapshot.docs.length === 0){
+        if(snapshot.size === 0){
           setLoadingCustomer(false);
           console.log('Nenhum cliente encontrado');
           toast.error('Nenhum cliente encontrado/cadastrado');
           setCustomer([{ id: 1, fantasyName: 'FREELA' }]);
-          return
+          return;
         };
 
         setLoadingCustomer(false);
@@ -72,8 +72,8 @@ export default function New(){
 
     await addDoc(collection(db, "called"), {
       created: new Date(),
-      customer: customer[customerSelected].fantasyName,
-      customerId: customer[customerSelected].id,
+      customer: customer[customerSelected]?.fantasyName,
+      customerId: customer[customerSelected]?.id,
       subject,
       status,
       complement,
