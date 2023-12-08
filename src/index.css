@@ -26,3 +26,43 @@ table th{
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+
+@media screen and (max-width: 48em){
+  table{
+      border: 0;
+  }
+
+  table caption{
+      font-size: 1.2em;
+  }
+
+  table thead{
+      border: none;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+  }
+
+  table tr{
+      border-bottom: 4px solid #DDD;
+      display: block;
+      margin-bottom: 0.60em;
+  }
+
+  table td{
+      border-bottom: 1px solid #DDD;
+      display: block;
+      font-size: 0.8em;
+      text-align: right;
+  }
+
+  table td::before{
+      content: attr(data-label);
+      float: left;
+      font-weight: bold;
+      text-transform: uppercase;
+  }
+}
