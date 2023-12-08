@@ -6,13 +6,18 @@ import Header from "../../components/Header";
 import Container from "../../components/Container";
 
 import { db } from "../../service/firebaseConnection";
-import { getDocs, collection, addDoc } from "firebase/firestore";
+import { getDocs, collection, addDoc, getDoc, doc, updateDoc } from "firebase/firestore";
 import toast from "react-hot-toast";
+
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const listCustomersRef = collection(db, "customers");
 
 export default function New(){
   const { user } = useContext(AuthContext);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const [customer, setCustomer] = useState<any[]>([]);
   const [subject, setSubject] = useState('Suporte');
@@ -44,6 +49,10 @@ export default function New(){
 
         setLoadingCustomer(false);
         setCustomer(list);
+
+        if(id){
+          loadId(list);
+        };
       })
       .catch((error) => {
         setLoadingCustomer(false);
@@ -53,7 +62,23 @@ export default function New(){
     };
 
     getCustomersList();
-  }, []);
+  }, [id]);
+
+  async function loadId(list: any){
+    const docRef = doc(db, "called", id || '');
+    await getDoc(docRef)
+    .then((snapshot) => {
+      setSubject(snapshot.data()?.subject);
+      setStatus(snapshot.data()?.status);
+      setComplement(snapshot.data()?.complement);
+
+      let index = list.findIndex((item: any) => item.id === snapshot.data()?.customerId);
+      setCustomerSelected(index);
+    })
+    .catch(error => {
+      console.log('Erro ao buscar item pelo id', error);
+    })
+  };
 
   function handleChecked(event: any){
     setStatus(event.target.value);
@@ -70,25 +95,49 @@ export default function New(){
   async function handleRegister(event: any){
     event.preventDefault();
 
-    await addDoc(collection(db, "called"), {
-      created: new Date(),
-      customer: customer[customerSelected]?.fantasyName,
-      customerId: customer[customerSelected]?.id,
-      subject,
-      status,
-      complement,
-      userId: user?.uid
-    })
-    .then(() => {
-      toast.success('Chamado registrado com sucesso');
-      setCustomerSelected(0);
-      setComplement('');
-      setSubject('Suporte');
-    })
-    .catch((error) => {
-      console.log('Erro ao tentar registrar o novo chamado', error);
-      toast.error('Ocorreu um erro, tente novamente');
-    });
+    if(id){
+      const docRef = doc(db, "called", id);
+
+      await updateDoc(docRef, {
+        customer: customer[customerSelected]?.fantasyName,
+        customerId: customer[customerSelected]?.id,
+        subject,
+        status,
+        complement,
+        userId: user?.uid
+      })
+      .then(() => {
+        toast.success('Chamado editado com sucesso');
+        setCustomerSelected(0);
+        setComplement('');
+        setSubject('Suporte');
+        navigate('/dashboard');
+      })
+      .catch((error) => {
+        console.log('Erro ao tentar atualizar chamado', error);
+        toast.error('Erro ao tentar atualizar chamado');
+      });
+    }else{
+      await addDoc(collection(db, "called"), {
+        created: new Date(),
+        customer: customer[customerSelected]?.fantasyName,
+        customerId: customer[customerSelected]?.id,
+        subject,
+        status,
+        complement,
+        userId: user?.uid
+      })
+      .then(() => {
+        toast.success('Chamado registrado com sucesso');
+        setCustomerSelected(0);
+        setComplement('');
+        setSubject('Suporte');
+      })
+      .catch((error) => {
+        console.log('Erro ao tentar registrar o novo chamado', error);
+        toast.error('Ocorreu um erro, tente novamente');
+      });
+    };
   };
 
   return(
@@ -97,7 +146,7 @@ export default function New(){
 
       <Container>
         <Header
-          title="Novo Chamado"
+          title={ id ? "Editar Chamado" : "Novo Chamado" }
           icon = {
             <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344V280H168c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/>
           }
@@ -181,7 +230,7 @@ export default function New(){
               type="submit" 
               className="mt-3 bg-primary w-full rounded-2xl px-4 py-3 text-xl text-white font-bold"
             >
-              Registrar
+              { id ? "Editar" : "Registrar" }
             </button>
           </form>
         </section>  
