@@ -8,17 +8,17 @@ import { Link } from "react-router-dom";
 import { format } from "date-fns";
 
 import { db } from "../../service/firebaseConnection";
-import { collection, query, limit, getDocs, orderBy } from "firebase/firestore";
+import { collection, query, getDocs, orderBy } from "firebase/firestore";
 
 const listCalledRef = collection(db, "called");
 
 export default function Dashboard(){
   const [called, setCalled] = useState<any[]>([]);
-  const [emptyList, setEmptyList] = useState(false);
+  const [colorStatus, setColorStatus] = useState('#C61B1B');
 
   useEffect(() => {
     async function loadCallList(){
-      const q = query(listCalledRef, orderBy('created', 'desc'), limit(5));
+      const q = query(listCalledRef, orderBy('created', 'desc'));
 
       const querySnapshot = await getDocs(q)
       .then((snapshot) => {
@@ -30,7 +30,7 @@ export default function Dashboard(){
               id: doc.id,
               complement: doc.data().complement,
               created: doc.data().created,
-              creadtFormat: format(doc.data().created.toDate(), "dd/MM/yyy"),
+              creadtFormat: format(doc.data().created.toDate(), "dd/MM/yyyy"),
               customer: doc.data().customer,
               customerId: doc.data().customerId,
               status: doc.data().status,
@@ -38,10 +38,8 @@ export default function Dashboard(){
             });
           });
 
-          setEmptyList(false);
+          setCalled([]);
           setCalled((item) => [...item, ...list]);
-        }else{
-          setEmptyList(true);
         };
       })
       .catch((error) => {
@@ -55,6 +53,10 @@ export default function Dashboard(){
       setCalled([]);
     };
   }, []);
+
+  called.forEach(item => {
+    
+  });
 
   return(
     <div className="h-screen bg-offWhite md:flex" >
@@ -75,41 +77,54 @@ export default function Dashboard(){
           Novo Chamado
         </Link>
 
-        <table className="w-full rounded-xl bg-white m-0 p-0 table-fixed border-collapse md:border-0" >
-          <thead>
-            <tr className="border-b-2 border-offWhite" >
-              <th scope="col" >Cliente</th>
-              <th scope="col" >Assunto</th>
-              <th scope="col" >Status</th>
-              <th scope="col" >Cadastrado em</th>
-              <th scope="col" >#</th>
-            </tr>
-          </thead>
+        { called.length === 0 ? (
+          <div className="translate-y-14 flex justify-center w-full" >
+            <p>Nenhum chamado encontrado</p>
+          </div>
+        ) : (
+          <table className="w-full rounded-xl bg-white m-0 p-0 table-fixed border-collapse md:border-0" >
+            <thead>
+              <tr className="border-b-2 border-offWhite" >
+                <th scope="col" >Cliente</th>
+                <th scope="col" >Assunto</th>
+                <th scope="col" >Status</th>
+                <th scope="col" >Cadastrado em</th>
+                <th scope="col" >#</th>
+              </tr>
+            </thead>
 
-          <tbody>
-            <tr className="border-b-2 border-offWhite" >
-              <td data-label='Cliente'  >Loja Informática</td>
-              <td data-label='Assunto' >Financeiro</td>
-              <td data-label='Status' >
-                <span className="bg-greyColor py-1 rounded-xl text-white font-bold flex items-center justify-center" >Progresso</span>
-              </td>
-              <td data-label='Cadastrado em' >11/12/2023</td>
-              <td data-label='#' className="flex items-center justify-center gap-2" >
-                <button className="bg-placeholder p-3 rounded-xl" >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="16" width="16" viewBox="0 0 512 512">
-                    <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
-                  </svg>
-                </button>
+            <tbody>
+              { called.map((item) => {
+                return(
+                <tr className="border-b-2 border-offWhite" key={ item.id } >
+                  <td data-label='Cliente'  >{ item.customer }</td>
+                  <td data-label='Assunto' >{ item.subject }</td>
+                  <td data-label='Status' className="flex flex-col items-center" >
+                    <span 
+                      style={{ backgroundColor: item.status === 'Aberto' ? '#C61B1B' : item.status === 'Atendido' ? '#1FC61B' : '#4B4B4B' }}
+                      className="py-1 px-4 rounded-xl text-white font-bold flex items-center justify-center" >{ item.status }
+                    </span>
+                  </td>
+                  <td data-label='Cadastrado em' >{ item.creadtFormat }</td>
+                  <td data-label='#' className="flex items-center justify-center gap-2" >
+                    <button className="bg-placeholder p-3 rounded-xl" >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="16" width="16" viewBox="0 0 512 512">
+                        <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+                      </svg>
+                    </button>
 
-                <Link to='/new' className="bg-placeholder p-3 rounded-xl" >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="16" width="16" viewBox="0 0 512 512">
-                    <path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/>
-                  </svg>
-                </Link>
-              </td>
-            </tr>
-          </tbody>
+                    <Link to='/new' className="bg-placeholder p-3 rounded-xl" >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" height="16" width="16" viewBox="0 0 512 512">
+                        <path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/>
+                      </svg>
+                    </Link>
+                  </td>
+                </tr>
+                )
+              }) }
+            </tbody>
         </table>
+        ) }
       </Container>
     </div>
   );
