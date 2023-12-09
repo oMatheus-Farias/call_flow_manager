@@ -141,7 +141,7 @@ export default function New(){
   };
 
   return(
-    <div className="h-full bg-offWhite md:flex" >
+    <div className="min-h-screen bg-offWhite md:flex" >
       <Nav/>
 
       <Container>

@@ -114,7 +114,7 @@ export default function Profile(){
   };
 
   return(
-    <div className="bg-offWhite md:flex" >
+    <div className="bg-offWhite min-h-screen md:flex" >
       <Nav/>
 
       <Container>

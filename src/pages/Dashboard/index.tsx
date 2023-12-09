@@ -62,7 +62,7 @@ export default function Dashboard(){
   };
 
   return(
-    <div className="h-screen bg-offWhite md:flex" >
+    <div className="min-h-screen bg-offWhite md:flex" >
       <Nav/>
 
       <Container>
