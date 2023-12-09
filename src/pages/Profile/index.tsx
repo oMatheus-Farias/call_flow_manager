@@ -78,7 +78,7 @@ export default function Profile(){
 
     const uploadRef = ref(storage, `images/${uid}/${imageAvatarStorage}`);
     
-    const upload = await uploadBytes(uploadRef, imageAvatarStorage)
+    await uploadBytes(uploadRef, imageAvatarStorage)
     .then((snapshot) => {
       getDownloadURL(snapshot.ref)
       .then(async (dowloadUrl) => {

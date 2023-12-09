@@ -22,7 +22,7 @@ export default function Dashboard(){
     async function loadCallList(){
       const q = query(listCalledRef, orderBy('created', 'desc'));
 
-      const querySnapshot = await getDocs(q)
+      await getDocs(q)
       .then((snapshot) => {
         if(snapshot.size !== 0){
           let list: any[] = [];

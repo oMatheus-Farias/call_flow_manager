@@ -28,7 +28,7 @@ export default function New(){
 
   useEffect(() => {
     async function getCustomersList(){
-      const querySnapshot = await getDocs(listCustomersRef)
+      await getDocs(listCustomersRef)
       .then((snapshot) => {
         let list: any[] = [];
 
