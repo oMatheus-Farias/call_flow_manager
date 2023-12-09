@@ -54,7 +54,7 @@ export default function Dashboard(){
     return () => {
       setCalled([]);
     };
-  }, []);
+  }, [openOrclosedModal]);
 
   function handleModal(item: any){
     setOpenOrClosedModal(true);
